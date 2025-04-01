@@ -12,7 +12,7 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-pro-latest",  
+    model_name="gemini-1.5-flash",  
     generation_config=generation_config,
     system_instruction="""You are a doctor assistant that knows everything about diseases, medical symptoms, 
     and cures of any diseases. Don't say "I don't know" or "consult a doctor". Provide the medical 
