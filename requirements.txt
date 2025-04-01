@@ -1,4 +1,3 @@
-pip install flask
 pip install google-generativeai
 python -m venv myenv
 source myenv/Scripts/activate
