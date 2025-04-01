@@ -1,63 +1,44 @@
-import base64
 import os
-from google import genai
-from google.genai import types
 from flask import Flask, request, render_template, jsonify
+import google.generativeai as genai
 import uuid
 
 app = Flask(__name__)
-client = genai.Client(
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-)
-generate_content_config = types.GenerateContentConfig(
-    temperature=0.1,
-    response_mime_type="text/plain",
-    system_instruction=[
-        types.Part.from_text(text="""you are a doctor assistant. that know everything about disease, medical symptoms, cure of any diseases. dont give any output that i dont know this consult doctor. just give that you know. you know everything related to disease cure, infection medicine symptoms that doctor know"""),
-    ],
+
+# Configure the API key - use environment variable for production
+genai.configure(api_key="AIzaSyC7GdiQtBHtC_Nnp0AQSArTDTUWFLWFQ_I")
+
+# Set up the model
+generation_config = {
+    "temperature": 0.1,
+    "top_p": 0.95,
+    "top_k": 64,
+    "max_output_tokens": 6000,
+    "response_mime_type": "text/plain",
+}
+
+# Initialize the model with system instruction
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-pro-latest",  # or "gemini-2.5-pro-exp-03-25" if available
+    generation_config=generation_config,
+    system_instruction="""You are a doctor assistant that knows everything about diseases, medical symptoms, 
+    and cures of any diseases. Don't say "I don't know" or "consult a doctor". Provide the medical 
+    information you have. You know everything related to disease cure, infection, medicine, and symptoms 
+    that doctors know."""
 )
 
+# Dictionary to store chat sessions
 chat_sessions = {}
 
 def generate_response(user_input, session_id):
     if session_id not in chat_sessions:
-        chat_sessions[session_id] = {
-            'contents': [
-                types.Content(
-                    role="user",
-                    parts=[types.Part.from_text(text="you are a doctor assistant that knows everything about diseases, symptoms, and cures. you never say 'i don't know' or 'consult a doctor'.")],
-                ),
-                types.Content(
-                    role="model",
-                    parts=[types.Part.from_text(text="Understood. I am a knowledgeable doctor assistant with comprehensive information about all medical topics including diseases, symptoms, treatments, and cures. How can I assist you with your health questions today?")],
-                ),
-            ]
-        }
-    
-    chat_sessions[session_id]['contents'].append(
-        types.Content(
-            role="user",
-            parts=[types.Part.from_text(text=user_input)],
-        )
-    )
+        # Start a new chat session
+        chat_sessions[session_id] = model.start_chat(history=[])
     
     try:
-        model = "gemini-2.5-pro-exp-03-25"
-        response = client.models.generate_content(
-            model=model,
-            contents=chat_sessions[session_id]['contents'],
-            config=generate_content_config,
-        )
-        
-        model_response = response.text
-        chat_sessions[session_id]['contents'].append(
-            types.Content(
-                role="model",
-                parts=[types.Part.from_text(text=model_response)],
-            )
-        )
-        
-        return model_response
+        # Send message and get response
+        response = chat_sessions[session_id].send_message(user_input)
+        return response.text
     except Exception as e:
         return f"Error: {str(e)}"
 
