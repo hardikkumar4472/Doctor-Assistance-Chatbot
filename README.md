@@ -1,7 +1,7 @@
 # AI Doctor Virtual Assistant 🏥🤖
 
 ## Overview
-The AI Doctor Virtual Assistant is an intelligent healthcare companion designed to provide instant, reliable, and personalized medical information. Powered by advanced natural language processing (NLP) and machine learning, this virtual assistant can answer health-related queries, explain medical conditions, suggest remedies, and provide general wellness advice—all in a user-friendly chat interface.
+The AI Doctor Virtual Assistant is an intelligent healthcare companion designed to provide instant, reliable, and personalized medical information. this virtual assistant can answer health-related queries, explain medical conditions, suggest remedies, and provide general wellness advice—all in a user-friendly chat interface.
 
 ## Features ✨
 - **Symptom Analysis**: Describe your symptoms and get potential conditions.  
