@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -654,6 +654,783 @@
         inputField.addEventListener('blur', function() {
             this.style.transform = 'scale(1)';
             this.style.boxShadow = '0 0 15px rgba(55, 0, 255, 0.2)';
+        });
+    };
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Doctor Diagnosis Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary-color: #ff6600;
+            --secondary-color: #ff9900;
+            --accent-color: #00ccff;
+            --text-color: #ffffff;
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.85);
+        }
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+            background: var(--bg-dark);
+            color: var(--text-color);
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            max-height: 100vh;
+            position: relative;
+            z-index: 2;
+            background-color: var(--card-bg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 102, 0, 0.1);
+        }
+
+        .header-text {
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.2), rgba(255, 153, 0, 0.2));
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            animation: fadeInDown 1s both;
+            transform-origin: top center;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s;
+        }
+
+        .header-text:hover::before {
+            left: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            margin: 5px 0;
+            padding: 5px;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            animation: textGlow 3s infinite alternate;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h5 {
+            text-align: center;
+            color: var(--accent-color);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 5px 0;
+            padding: 5px;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            animation: fadeIn 1.5s both 0.3s;
+            font-weight: 400;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: rgba(10, 10, 10, 0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            color: var(--text-color);
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.7), rgba(255, 153, 0, 0.7));
+            border-radius: 18px 18px 0 18px;
+            padding: 12px 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+            animation: slideInRight 0.5s both, float 3s ease-in-out infinite;
+            transform-origin: right center;
+            position: relative;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+        }
+
+        .user-message::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left-color: rgba(255, 102, 0, 0.7);
+            border-right: 0;
+            margin-top: -10px;
+            margin-right: -10px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            color: var(--text-color);
+            background: linear-gradient(135deg, rgba(0, 204, 255, 0.2), rgba(20, 20, 20, 0.8));
+            border-radius: 18px 18px 18px 0;
+            padding: 12px 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            box-shadow: 0 4px 10px rgba(0, 204, 255, 0.2);
+            animation: slideInLeft 0.5s both, float 3s ease-in-out infinite 0.5s;
+            transform-origin: left center;
+            position: relative;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+        }
+
+        .ai-message::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: rgba(0, 204, 255, 0.2);
+            border-left: 0;
+            margin-top: -10px;
+            margin-left: -10px;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            animation: fadeInUp 1s both;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px 25px;
+            border: 1px solid rgba(255, 102, 0, 0.5);
+            border-radius: 50px;
+            background-color: rgba(10, 10, 10, 0.8);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255, 102, 0, 0.8);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+            transform: scale(1.02);
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0 25px;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.8);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        .loader {
+            align-self: center;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-bottom: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite, pulse 1.5s ease-in-out infinite alternate;
+            margin: 20px 0;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-self: flex-start;
+            padding: 10px 15px;
+            background-color: rgba(0, 204, 255, 0.2);
+            border-radius: 18px 18px 18px 0;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation: typingAnimation 1.5s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) {
+            animation: typingAnimation 1.5s infinite ease-in-out 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation: typingAnimation 1.5s infinite ease-in-out 0.4s;
+        }
+
+        .ai-message p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .ai-message .quote {
+            color: var(--accent-color);
+            font-style: italic;
+            display: inline-block;
+            transform: translateY(2px);
+        }
+
+        .ai-message br {
+            display: block;
+            content: "";
+            margin: 6px 0;
+        }
+
+        .medical-icon {
+            display: inline-block;
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-30px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-30px) rotateY(90deg);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0) rotateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from { 
+                opacity: 0; 
+                transform: translateX(30px) rotateY(-90deg);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0) rotateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 5px rgba(255, 102, 0, 0.5); }
+            100% { text-shadow: 0 0 15px rgba(255, 102, 0, 0.8); }
+        }
+
+        @keyframes typingAnimation {
+            0%, 100% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        @media (max-width: 992px) {
+            .chat-container {
+                padding: 15px;
+            }
+            
+            .header-text {
+                max-width: 90%;
+                padding: 12px;
+            }
+            
+            input[type="text"] {
+                padding: 12px 20px;
+            }
+            
+            button {
+                padding: 0 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 10px;
+                height: 100vh;
+                max-height: -webkit-fill-available;
+            }
+            
+            .header-text {
+                max-width: 100%;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h5 {
+                font-size: 1rem;
+            }
+            
+            .chat-box {
+                padding: 10px;
+                gap: 12px;
+            }
+            
+            .user-message, .ai-message {
+                max-width: 90%;
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            
+            input[type="text"] {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            
+            button {
+                padding: 0 15px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                padding: 8px;
+            }
+            
+            .header-text {
+                padding: 10px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin: 3px 0;
+            }
+            
+            h5 {
+                font-size: 0.85rem;
+                margin: 3px 0;
+            }
+            
+            .chat-box {
+                padding: 8px;
+                gap: 10px;
+            }
+            
+            .user-message, .ai-message {
+                max-width: 95%;
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            input[type="text"] {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            button {
+                padding: 0 12px;
+                font-size: 14px;
+            }
+            
+            .loader {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+            .chat-container {
+                height: 100vh;
+                max-height: -webkit-fill-available;
+            }
+            
+            .header-text {
+                padding: 5px 10px;
+                margin-bottom: 5px;
+            }
+            
+            h1 {
+                margin: 2px 0;
+                font-size: 1.2rem;
+            }
+            
+            h5 {
+                margin: 2px 0;
+                font-size: 0.7rem;
+            }
+            
+            .chat-box {
+                padding: 5px;
+                gap: 8px;
+            }
+            
+            .user-message, .ai-message {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            input[type="text"] {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <div class="chat-container">
+        <div class="header-text">
+            <h1><i class="fas fa-stethoscope medical-icon"></i>AI Doctor Diagnosis Assistant</h1>
+            <h5>By Hardik Kumar • Secure & Confidential</h5>
+        </div>
+        <div class="chat-box" id="chat-box"></div>
+        <form id="chat-form">
+            <input type="text" name="user_input" placeholder="Describe your symptoms or health concern..." required id="inputt">
+            <button type="submit"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+    // Initialize particles.js
+    particlesJS("particles-js", {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: ["#ff6600", "#00ccff", "#ffffff"] },
+            shape: { 
+                type: "circle",
+                stroke: { width: 0, color: "#000000" }
+            },
+            opacity: {
+                value: 0.5,
+                random: true,
+                anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: "#ff6600",
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "out",
+                bounce: false,
+                attract: { enable: false, rotateX: 600, rotateY: 1200 }
+            }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: {
+                onhover: { enable: true, mode: "repulse" },
+                onclick: { enable: true, mode: "push" },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 400, line_linked: { opacity: 1 } },
+                bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                repulse: { distance: 100, duration: 0.4 },
+                push: { particles_nb: 4 },
+                remove: { particles_nb: 2 }
+            }
+        },
+        retina_detect: true
+    });
+
+    document.getElementById('chat-form').onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const chatBox = document.getElementById('chat-box');
+        const userInput = formData.get('user_input');
+        
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.className = 'user-message';
+        userMessageDiv.textContent = userInput;
+        chatBox.appendChild(userMessageDiv);
+        
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = `
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        `;
+        chatBox.appendChild(typingIndicator);
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+        this.reset();
+        
+        try {
+            // Simulate API call with timeout
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Remove typing indicator
+            chatBox.removeChild(typingIndicator);
+            
+            // Generate a mock AI response based on user input
+            const aiResponse = generateAIResponse(userInput);
+            
+            const aiMessageDiv = document.createElement('div');
+            aiMessageDiv.className = 'ai-message';
+            aiMessageDiv.innerHTML = formatAIResponse(aiResponse);
+            chatBox.appendChild(aiMessageDiv);
+            
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 100);
+            
+        } catch (error) {
+            if (chatBox.contains(typingIndicator)) {
+                chatBox.removeChild(typingIndicator);
+            }
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'ai-message';
+            errorDiv.style.color = '#ff5555';
+            errorDiv.textContent = 'Sorry, there was an error processing your request. Please try again.';
+            chatBox.appendChild(errorDiv);
+            
+            chatBox.scrollTop = chatBox.scrollHeight;
+            console.error('Error:', error);
+        }
+    };
+
+    function generateAIResponse(userInput) {
+        // This is a mock response generator for demonstration
+        // In a real application, this would be replaced with actual API calls
+        
+        const lowerInput = userInput.toLowerCase();
+        
+        if (lowerInput.includes('headache')) {
+            return "Headaches can have various causes. Common types include tension headaches, migraines, and cluster headaches. \n\n**Possible causes:**\n• Stress or tension\n• Dehydration\n• Eye strain\n• Sinus issues\n\n**Recommendations:**\n• Stay hydrated\n• Rest in a quiet, dark room\n• Consider over-the-counter pain relief if appropriate\n• If severe or persistent, consult a healthcare provider\n\n*Note: This is general advice. For persistent or severe symptoms, please see a doctor.*";
+        } else if (lowerInput.includes('fever') || lowerInput.includes('temperature')) {
+            return "Fever is typically a sign that your body is fighting an infection. \n\n**General guidance:**\n• Rest and stay hydrated\n• Monitor your temperature regularly\n• Use fever-reducing medication if needed (following package instructions)\n• Seek medical attention if fever is high (over 103°F/39.4°C) or lasts more than 3 days\n\n**When to seek immediate care:**\n• Difficulty breathing\n• Severe headache\n• Stiff neck\n• Confusion or seizures";
+        } else if (lowerInput.includes('stomach') || lowerInput.includes('nausea')) {
+            return "Stomach issues can range from mild indigestion to more serious conditions. \n\n**Common causes:**\n• Food intolerance\n• Viral infections\n• Stress\n• Medication side effects\n\n**Self-care tips:**\n• Stick to bland foods (BRAT diet: bananas, rice, applesauce, toast)\n• Stay hydrated with small, frequent sips\n• Avoid spicy, fatty, or heavy foods\n• Rest as needed\n\nIf symptoms persist for more than 48 hours or include severe pain, vomiting blood, or high fever, seek medical attention.";
+        } else {
+            return "Thank you for describing your symptoms. Based on your input, I recommend:\n\n• Monitoring your symptoms and noting any changes\n• Staying well-hydrated\n• Getting adequate rest\n• Considering over-the-counter remedies if appropriate for your symptoms\n\n**Important:** I'm an AI assistant and cannot provide a medical diagnosis. If your symptoms persist, worsen, or concern you, please consult with a healthcare professional for proper evaluation and treatment.\n\nIs there anything specific about your symptoms you'd like me to provide more information on?";
+        }
+    }
+
+    function formatAIResponse(text) {
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        text = text.replace(/\n(\d+\.)\s/g, '<br>$1 ');
+        text = text.replace(/\n\n/g, '</p><p>');
+        text = text.replace(/\n/g, '<br>');
+        text = `<p>${text}</p>`;
+        text = text.replace(/"([^"]+)"/g, '<span class="quote">"$1"</span>');
+        
+        // Add medical icons to specific terms
+        const medicalIcons = {
+            'headache': 'fas fa-head-side-virus',
+            'fever': 'fas fa-thermometer-full',
+            'temperature': 'fas fa-thermometer-half',
+            'stomach': 'fas fa-stomach',
+            'nausea': 'fas fa-procedures',
+            'pain': 'fas fa-pills',
+            'hydration': 'fas fa-tint',
+            'rest': 'fas fa-bed',
+            'doctor': 'fas fa-user-md',
+            'medication': 'fas fa-capsules'
+        };
+        
+        Object.keys(medicalIcons).forEach(term => {
+            const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+            text = text.replace(regex, `<i class="${medicalIcons[term]} medical-icon"></i><span style="color: #7bff00; font-weight: bold;">$1</span>`);
+        });
+        
+        return text;
+    }
+    
+    window.onload = function() {
+        const chatBox = document.getElementById('chat-box');
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'ai-message';
+        welcomeDiv.innerHTML = `
+            <p><i class="fas fa-stethoscope medical-icon"></i>Hello! I'm your AI Doctor Diagnosis Assistant. 👩‍⚕️</p>
+            <p>I can help you understand possible causes for your symptoms and provide general health information.</p>
+            <br>
+            <p><i class="fas fa-info-circle medical-icon"></i><strong>Please note:</strong> I am an AI assistant and cannot provide medical diagnoses. Always consult with a healthcare professional for proper medical advice.</p>
+            <br>
+            <p><i class="fas fa-lightbulb medical-icon"></i>You can describe:</p>
+            <p>• Symptoms you're experiencing</p>
+            <p>• Duration and severity</p>
+            <p>• Any related concerns</p>
+            <br>
+            <p><i class="fas fa-shield-alt medical-icon"></i>Your privacy is important. All conversations are confidential.</p>
+        `;
+        chatBox.appendChild(welcomeDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        
+        const inputField = document.getElementById('inputt');
+        inputField.addEventListener('focus', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.boxShadow = '0 0 20px rgba(255, 102, 0, 0.7)';
+        });
+        
+        inputField.addEventListener('blur', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 0 15px rgba(255, 102, 0, 0.2)';
         });
     };
     </script>
