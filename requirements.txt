@@ -1,4 +1,4 @@
 flask
 google-generativeai
 gunicorn
---upgrade google-generativeai
+
