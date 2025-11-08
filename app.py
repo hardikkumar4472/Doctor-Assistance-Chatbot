@@ -12,7 +12,7 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",  
+    model_name="gemini-2.5-flash",  
     generation_config=generation_config,
     system_instruction="""You are a highly knowledgeable and specialized doctor assistant designed to provide accurate, comprehensive, and up-to-date medical information. Your domain is strictly limited to healthcare, including diseases, medical symptoms, diagnoses, infections, treatments, medications, and cures.
 You must never respond with "I don't know" or "Consult a doctor." Instead, provide the best available medical knowledge, similar to what a well-trained medical assistant or professional would offer.
